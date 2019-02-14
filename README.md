@@ -62,6 +62,16 @@ The HOSTNAME can be a wildcard like `*.example.com`, and you can list
 multiple hostnames like: `localhost,*.example.com,*.example.org`.  These need
 to match the HostName used to ssh to the machine.
 
+At this point you should be able to ssh to the host that has the signed key,
+without being prompted to verify the host key or needing it's key in your
+`known_hosts` file.  My `known_hosts` file went down from 400 lines to 12.
+
+You will probably want to deploy `/etc/ssh/ssh_known_hosts` to your systems so
+that you don't have to add entries to each individual user file.
+
+To test, run ssh with the `-v` option, and it should show that it is using
+the signed host key.
+
 Role Settings
 =============
 
