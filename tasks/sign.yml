@@ -1,0 +1,51 @@
+---
+- name: Make tempfile
+  tempfile:
+    state: file
+    suffix: signed_hostkeys
+  register: ssh_signed_tempfile
+  tags:
+    - ssh_signed_hostkeys
+
+- name: Decrypt signing key
+  copy:
+    src: ca_key
+    dest: "{{ssh_signed_tempfile.path}}"
+    owner: root
+    group: root
+    mode: a=-,u+r
+  tags:
+    - ssh_signed_hostkeys
+
+- name: Sign key
+  command: "ssh-keygen -s {{ssh_signed_tempfile.path}} -I {{signed_ssh_certificate_identity}} -h -n {{','.join(signed_ssh_hostnames)}} -V {{signed_ssh_valid_time}} {{keyfile}}"
+  with_items: signed_ssh_keyfiles
+  tags:
+    - ssh_signed_hostkeys
+
+- name: File permissions
+  file:
+    path: "{{keyfile}}-cert.pub"
+    owner: root
+    group: root
+    mode: a=r,u+w
+  with_items: signed_ssh_keyfiles
+  tags:
+    - ssh_signed_hostkeys
+
+- name: Add cert to sshd_config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: "HostCertificate {{keyfile}}-cert.pub"
+    regexp: "HostCertificate {{keyfile}}-cert.pub"
+  notify: Restart SSH
+  with_items: signed_ssh_keyfiles
+  tags:
+    - ssh_signed_hostkeys
+
+- name: Remove signing cert
+  file:
+    path: "{{ssh_signed_tempfile.path}}"
+    state: absent
+  tags:
+    - ssh_signed_hostkeys

@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: linsomniac
+  description: Sign SSH host keys using vault-encrypted CA key.
+  license: BSD
+
+  min_ansible_version: 1.6
+  platforms:
+  - name: Ubuntu
+    versions:
+      - xenial
+      - bionic
+  - name: Debian
+    versions:
+      - jessie
+      - stretch
+  galaxy_tags:
+      - system
+      - ssh
+dependencies: []
