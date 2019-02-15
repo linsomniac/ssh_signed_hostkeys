@@ -11,7 +11,7 @@
     - ssh_signed_hostkeys
 
 - include: sign.yml keyfile="{{signed_ssh_stat_keyfile.item}}"
-  when: not signed_ssh_stat_keyfile.stat.exists
+  when: signed_ssh_stat is defined and not signed_ssh_stat_keyfile.stat.exists
   with_items: "{{signed_ssh_stat.results}}"
   loop_control:
     loop_var: signed_ssh_stat_keyfile
