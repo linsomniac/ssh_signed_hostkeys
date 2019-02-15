@@ -3,9 +3,7 @@
   stat:
     path: "{{item}}-cert.pub"
   register: signed_ssh_stat
-  ignore_errors: yes
   check_mode: no
-  changed_when: no
   with_items: "{{signed_ssh_keyfiles}}"
   tags:
     - ssh_signed_hostkeys
