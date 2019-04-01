@@ -91,6 +91,11 @@ role:
         - "{{ansible_fqdn}}"
         - "{{ansible_fqdn.split('.')[0]}}"
         - "{{'.'.join(ansible_fqdn.split('.')[:2])}}"
+  - `signed_ssh_nuke_existing_sigs` -- Remove existing signatures and resign?
+    Use this if you change the hostnames on the signature (via
+    `signed_ssh_hostnames`) to update the certificates with the new names.
+    Run with `--extra-vars 'signed_ssh_nuke_existing_sigs=true'`
+    Default: false
   - `signed_ssh_valid_time` -- How long the signature is valid for, as in the
     "-V" argument to `ssh-keygen`.  Default: `+520w`
   - `signed_ssh_certificate_identity` -- A string identifying the signature,

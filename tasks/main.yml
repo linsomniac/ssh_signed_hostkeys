@@ -1,16 +1,27 @@
 ---
-- name: Test if cert exists
-  stat:
+#  For re-signing keys when more names have been added
+#  --extra-vars 'signed_ssh_nuke_existing_sigs=true'
+- name: Nuke existing sigs
+  file:
     path: "{{item}}-cert.pub"
-  register: signed_ssh_stat
+    state: absent
+  when: signed_ssh_nuke_existing_sigs
+  with_items: "{{signed_ssh_keyfiles}}"
+  tags:
+    - ssh_signed_hostkeys
+
+- name: Test if keyfile exists
+  stat:
+    path: "{{item}}.pub"
+  register: signed_ssh_key_stat
   check_mode: no
   with_items: "{{signed_ssh_keyfiles}}"
   tags:
     - ssh_signed_hostkeys
 
-- include: sign.yml keyfile="{{signed_ssh_stat_keyfile.item}}"
-  when: signed_ssh_stat is defined and not signed_ssh_stat_keyfile.stat.exists
-  with_items: "{{signed_ssh_stat.results}}"
+- include: check_cert.yml signed_ssh_keyfile="{{signed_ssh_stat_keyfile.item}}"
+  when: signed_ssh_key_stat is defined and signed_ssh_stat_keyfile.stat.exists
+  with_items: "{{signed_ssh_key_stat.results}}"
   loop_control:
     loop_var: signed_ssh_stat_keyfile
   tags:

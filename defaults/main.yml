@@ -1,5 +1,6 @@
 ---
 signed_ssh_keyfiles:
+  - /etc/ssh/ssh_host_dsa_key
   - /etc/ssh/ssh_host_rsa_key
   - /etc/ssh/ssh_host_ecdsa_key
   - /etc/ssh/ssh_host_ed25519_key
@@ -10,3 +11,4 @@ signed_ssh_hostnames:
   - "{{'.'.join(ansible_fqdn.split('.')[:2])}}"
 signed_ssh_valid_time: +520w
 signed_ssh_certificate_identity: ssh_signed_hostkeys
+signed_ssh_nuke_existing_sigs: false

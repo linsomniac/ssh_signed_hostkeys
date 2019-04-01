@@ -1,0 +1,13 @@
+---
+- name: Test if cert exists
+  stat:
+    path: "{{signed_ssh_keyfile}}-cert.pub"
+  register: signed_ssh_cert_stat
+  check_mode: no
+  tags:
+    - ssh_signed_hostkeys
+
+- include: sign.yml signed_ssh_certfile="{{signed_ssh_keyfile}}-cert.pub"
+  when: signed_ssh_cert_stat is defined and not signed_ssh_cert_stat.stat.exists
+  tags:
+    - ssh_signed_hostkeys
